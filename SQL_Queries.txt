@@ -1,0 +1,72 @@
+1, Top 10 Performing Stocks
+
+SELECT 
+    Ticker,
+    ROUND(Yearly_Return, 2) as yearly_return_percent
+FROM stocks_cleaned
+GROUP BY Ticker, Yearly_Return
+ORDER BY Yearly_Return DESC
+LIMIT 10;
+
+2, Bottom 10 Performing Stocks 
+
+SELECT 
+    Ticker,
+    ROUND(Yearly_Return, 2) as yearly_return_percent
+FROM stocks_cleaned
+GROUP BY Ticker, Yearly_Return
+ORDER BY Yearly_Return ASC
+LIMIT 10;
+
+3, Market Summary
+
+SELECT 
+    COUNT(DISTINCT Ticker) as total_stocks,
+    ROUND(AVG(Close), 2) as avg_closing_price,
+    ROUND(AVG(Volume), 0) as avg_volume,
+    ROUND(AVG(Yearly_Return), 2) as avg_yearly_return,
+    ROUND(AVG(Daily_Return) * 100, 3) as avg_daily_return_percent
+FROM stocks_cleaned;
+
+4, Volatility Analysis 
+
+SELECT 
+    Ticker,
+    COUNT(*) as trading_days,
+    ROUND(STDDEV(Daily_Return) * 100, 3) as volatility_percent,
+    ROUND(AVG(Daily_Return) * 100, 3) as avg_daily_return_percent
+FROM stocks_cleaned
+WHERE Daily_Return IS NOT NULL
+GROUP BY Ticker
+ORDER BY volatility_percent DESC
+LIMIT 10; 
+
+5, Daily Returns for Specific Stock 
+
+SELECT 
+    Date,
+    Close,
+    Daily_Return,
+    ROUND(Daily_Return * 100, 2) as daily_return_percent
+FROM stocks_cleaned 
+WHERE Ticker = 'RELIANCE'
+ORDER BY Date DESC
+LIMIT 10;
+
+6, Month-wise Performance
+
+SELECT 
+    Month,
+    Ticker,
+    MIN(Close) as month_start_price,
+    MAX(Close) as month_end_price,
+    ROUND(((MAX(Close) - MIN(Close)) / MIN(Close)) * 100, 2) as monthly_return_percent
+FROM stocks_cleaned
+WHERE Ticker = 'TCS'
+GROUP BY Month, Ticker
+ORDER BY Month;
+
+7, Check Table Structure
+
+SHOW COLUMNS FROM stocks_cleaned;
+SHOW COLUMNS FROM stock_summary;
